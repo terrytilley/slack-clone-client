@@ -9,6 +9,7 @@ module.exports = {
     "react",
     "prettier",
   ],
+  "parser": "babel-eslint",
   "env": {
     "es6": true,
     "node": true,

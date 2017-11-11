@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Container, Header, Input, Button } from 'semantic-ui-react';
+import {
+  Container,
+  Header,
+  Form,
+  Input,
+  Button,
+  Message,
+} from 'semantic-ui-react';
 import { gql, graphql } from 'react-apollo';
 
 class Login extends Component {
@@ -12,6 +19,7 @@ class Login extends Component {
     extendObservable(this, {
       email: '',
       password: '',
+      errors: {},
     });
 
     this.onChange = this.onChange.bind(this);
@@ -29,36 +37,69 @@ class Login extends Component {
       variables: { email, password },
     });
 
-    const { ok, token, refreshToken } = response.data.login;
+    console.log(response);
+
+    const { ok, token, refreshToken, errors } = response.data.login;
 
     if (ok) {
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
+      this.props.history.push('/');
+    } else {
+      const err = {};
+      errors.forEach(({ path, message }) => {
+        err[`${path}Error`] = message;
+      });
+
+      this.errors = err;
     }
   }
 
   render() {
-    const { email, password } = this;
+    const errorList = [];
+    const { email, password, errors: { emailError, passwordError } } = this;
+
+    if (emailError) {
+      errorList.push(emailError);
+    }
+    if (passwordError) {
+      errorList.push(passwordError);
+    }
 
     return (
       <Container text>
         <Header as="h2">Login</Header>
-        <Input
-          fluid
-          placeholder="Email"
-          name="email"
-          value={email}
-          onChange={this.onChange}
-        />
-        <Input
-          fluid
-          type="password"
-          placeholder="Password"
-          name="password"
-          value={password}
-          onChange={this.onChange}
-        />
-        <Button onClick={this.onSubmit}>Submit</Button>
+        <Form>
+          <Form.Field error={!!emailError}>
+            <Input
+              fluid
+              placeholder="Email"
+              name="email"
+              value={email}
+              onChange={this.onChange}
+            />
+          </Form.Field>
+          <Form.Field error={!!passwordError}>
+            <Input
+              fluid
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={password}
+              onChange={this.onChange}
+            />
+          </Form.Field>
+          <Button primary onClick={this.onSubmit}>
+            Submit
+          </Button>
+        </Form>
+        {errorList.length ? (
+          <Message
+            error
+            header="There was some errors with your submission"
+            list={errorList}
+          />
+        ) : null}
       </Container>
     );
   }
@@ -80,6 +121,7 @@ const loginMutation = gql`
 
 Login.propTypes = {
   mutate: PropTypes.func.isRequired,
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default graphql(loginMutation)(observer(Login));
