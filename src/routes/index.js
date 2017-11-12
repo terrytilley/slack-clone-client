@@ -1,8 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
+import CreateTeam from './CreateTeam';
 
 const Routes = () => (
   <BrowserRouter>
@@ -10,6 +12,7 @@ const Routes = () => (
       <Route path="/" exact component={Home} />
       <Route path="/login" exact component={Login} />
       <Route path="/register" exact component={Register} />
+      <Route path="/create-team" exact component={CreateTeam} />
     </Switch>
   </BrowserRouter>
 );
