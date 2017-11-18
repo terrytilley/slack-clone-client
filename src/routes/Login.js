@@ -10,7 +10,8 @@ import {
   Button,
   Message,
 } from 'semantic-ui-react';
-import { gql, graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+import { graphql } from 'react-apollo';
 
 class Login extends Component {
   constructor(props) {

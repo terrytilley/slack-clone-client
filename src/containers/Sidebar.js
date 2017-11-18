@@ -1,6 +1,7 @@
-import React from 'react';
-import { gql, graphql } from 'react-apollo';
 import _ from 'lodash';
+import React from 'react';
+import gql from 'graphql-tag';
+import { graphql } from 'react-apollo';
 import decode from 'jwt-decode';
 
 import Channels from '../components/Channels';
