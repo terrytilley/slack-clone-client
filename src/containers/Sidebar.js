@@ -1,8 +1,8 @@
-import _ from 'lodash';
 import React from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import decode from 'jwt-decode';
+import findIndex from 'lodash/findIndex';
 
 import Channels from '../components/Channels';
 import Teams from '../components/Teams';
@@ -13,7 +13,9 @@ const Sidebar = ({ data: { loading, allTeams }, currentTeamId }) => {
   }
 
   let username = '';
-  const teamIdx = _.findIndex(allTeams, ['id', currentTeamId]);
+  const teamIdx = currentTeamId
+    ? findIndex(allTeams, ['id', parseInt(currentTeamId, 10)])
+    : 0;
   const team = allTeams[teamIdx];
 
   try {
